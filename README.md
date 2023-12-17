@@ -110,6 +110,12 @@ The News Aggregator Application provides a seamless experience for users to stay
 │   ├───routes
 │   └───utils
 │       ├───common
+├───test
+│   ├───connections
+│   ├───helpers
+│   ├───models
+│   ├───middlewares
+│   ├───routes
 
 \_**\_index.js
 \_\_**.env
