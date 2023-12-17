@@ -101,28 +101,28 @@ The News Aggregator Application provides a seamless experience for users to stay
 
 
 
-├───src
-│   ├───config
-│   ├───db
-│   ├───controllers
-│   ├───middlewares
-│   ├───models
-│   ├───routes
-│   └───utils
-│       ├───common
-├───test
-│   ├───connections
-│   ├───helpers
-│   ├───models
-│   ├───middlewares
-│   ├───routes
-
-\_**\_index.js
-\_\_**.env
-\_**\_.gitignore
-\_\_**package-lock.json
-\_\_\_\_package.json
-\_\_\_\_api.log
+.
+├── src
+│   ├── config
+│   ├── db
+│   ├── controllers
+│   ├── middlewares
+│   ├── models
+│   ├── routes
+│   └── utils
+│       ├── common
+├── test
+│   ├── connections
+│   ├── helpers
+│   ├── models
+│   ├── middlewares
+│   ├── routes
+├── _index.js
+├── .env
+├── .gitignore
+├── package-lock.json
+├── package.json
+├── api.log
 
 
 
