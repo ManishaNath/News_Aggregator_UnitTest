@@ -118,16 +118,6 @@ The News Aggregator Application provides a seamless experience for users to stay
 \_\_\_\_package.json
 \_\_\_\_api.log
 
-├───test
-│ ├───connections
-│ ├───controllers
-│ ├───helpers
-│ ├───models
-│ ├───routes
 
-├───test
-│   ├───connections
-│   ├───helpers
-│   ├───models
-│   ├───middlewares
-│   ├───routes
+
+
