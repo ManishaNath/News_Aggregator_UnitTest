@@ -99,20 +99,24 @@ The News Aggregator Application provides a seamless experience for users to stay
 
 ## Folder Structure
 
+
+
 ├───src
-│ ├───config
-│ ├───controllers
-│ ├───middlewares
-│ ├───models
-│ ├───routes
-│ └───utils
-│ ├───common
+│   ├───config
+│   ├───db
+│   ├───controllers
+│   ├───middlewares
+│   ├───models
+│   ├───routes
+│   └───utils
+│       ├───common
 
 \_**\_index.js
 \_\_**.env
 \_**\_.gitignore
 \_\_**package-lock.json
 \_\_\_\_package.json
+\_\_\_\_api.log
 
 ├───test
 │ ├───connections
@@ -120,3 +124,10 @@ The News Aggregator Application provides a seamless experience for users to stay
 │ ├───helpers
 │ ├───models
 │ ├───routes
+
+├───test
+│   ├───connections
+│   ├───helpers
+│   ├───models
+│   ├───middlewares
+│   ├───routes
