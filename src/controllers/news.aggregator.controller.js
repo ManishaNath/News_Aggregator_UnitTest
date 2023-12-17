@@ -8,6 +8,23 @@ const { ENVConfig } = require("../config");
 var bcrypt = require("bcrypt");
 const { User } = require("../models/news.aggregator.db");
 
+// for caching
+const NodeCache = require("node-cache");
+const cache = new NodeCache({ stdTTL: 600, checkperiod: 120 });
+
+// for Logging
+const winston = require("winston");
+
+// Configure the Winston logger
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: "api.log" }),
+  ],
+});
+
 // Signup endpoint
 const signup = async (req, res) => {
   const user = new User({
@@ -21,8 +38,12 @@ const signup = async (req, res) => {
   try {
     // Save the user to the database
     await user.save();
+    // Logging the successful signup
+    logger.info("User signed up successfully");
     return res.status(201).json({ message: "User saved successfully" });
   } catch (err) {
+    // Logging the error during signup
+    logger.error(`User saving failed: ${err.message}`);
     return res.status(500).json({ message: `User saving failed ${err}` });
   }
 };
@@ -48,12 +69,16 @@ const signin = async (req, res) => {
       expiresIn: ENVConfig.JWT_Access_Token_Expires_In,
     });
 
+    // Logging the successful sign-in
+    logger.info("User signed in successfully");
     return res.status(200).json({
       user: { id: user.id },
       message: "Login successful",
       accessToken: token,
     });
   } catch (error) {
+    // Logging the error during sign-in
+    logger.error(`Error during sign-in: ${error.message}`);
     console.error("Error during sign-in:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
@@ -144,6 +169,8 @@ const updatePreferences = async (req, res) => {
 
     SuccessResponse.data = updatedUser.preferences;
     SuccessResponse.message = "User News Preferences Updated Successfully";
+    // Logging the successful sign-in
+    logger.info("User Preferences has been updated successfully");
     return res.status(200).json(SuccessResponse);
   } catch (error) {
     ErrorResponse.error = error;
@@ -169,25 +196,44 @@ const fetchNews = async (req, res) => {
     const randomPreference =
       preferences[Math.floor(Math.random() * preferences.length)];
 
-    // Adjust this URL based on your requirements
-    const newsApiUrl = `https://newsapi.org/v2/everything?q=${randomPreference}&apiKey=${ENVConfig.News_Aggregator_API_Key}`;
+    // Check if news articles are already in the cache
+    const cacheKey = `news_${randomPreference}`;
+    const cachedNews = cache.get(cacheKey);
+
+    if (cachedNews) {
+      logger.info("User News preferences have been Fetched from Cache");
+      // If cached, return the news articles from the cache
+      return res
+        .status(200)
+        .json({ articles: cachedNews, message: "News Fetched from Cache" });
+    }
 
     // Fetch news articles from an external API with an authorization header
+    const newsApiUrl = `https://newsapi.org/v2/everything?q=${randomPreference}&apiKey=${ENVConfig.News_Aggregator_API_Key}`;
     const response = await axios.get(newsApiUrl, {
       headers: { "x-access-token": req.headers.authorization.split(" ")[1] },
     });
 
     // Process and filter news articles based on user preferences if needed
+    const newsArticles = response.data.articles;
 
-    SuccessResponse.data = response.data.articles; // Assuming the response structure has an 'articles' property
-    SuccessResponse.message = "News Fetched Successfully";
-    return res.status(Number(200)).json(SuccessResponse);
+    // Cache the news articles
+    cache.set(cacheKey, newsArticles);
+    // Logging the successful fetching
+    logger.info("User News preferences have been Cached successfully");
+    return res
+      .status(200)
+      .json({ articles: newsArticles, message: "News Fetched Successfully" });
   } catch (error) {
-    ErrorResponse.error = error;
-    ErrorResponse.message = error.message;
+    // Logging the error during fetching news
+    logger.error(`Error fetching news: ${error.message}`);
+
     return res
       .status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR)
-      .json(ErrorResponse);
+      .json({
+        message: "Error fetching news articles",
+        error: error.message,
+      });
   }
 };
 

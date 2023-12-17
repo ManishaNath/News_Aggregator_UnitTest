@@ -9,4 +9,5 @@ module.exports = {
   JWT_Secret_Key: process.env.JWT_Secret_Key || "ThisisSecret9999@",
   News_Aggregator_API_Key: process.env.News_Aggregator_API_Key,
   NEWS_API_URL: process.env.NEWS_API_URL,
+  MongoDB_URI: process.env.MONGO_URL || "mongodb://127.0.0.1:27017/newsdb",
 };

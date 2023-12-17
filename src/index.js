@@ -43,3 +43,5 @@ app.listen(ENVConfig.Port_Number, (err) => {
 //npm install --save-dev jsonwebtoken  (JWT token - Registration)
 //npm install newsapi --save
 //npm install --save http-status-codes
+//npm install node-cache
+// npm install --save-dev supertest mocha
